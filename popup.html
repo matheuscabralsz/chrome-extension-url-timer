@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="bootstrap-4.3.1-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="bootstrap-icons-1.5.0/bootstrap-icons.css">
+    <link rel="stylesheet" href="popup.css">
+    <title>Hello, World!</title>
+</head>
+<body>
+
+
+<div class="custom-control custom-switch">
+    <div id="activeSwitchContainer">
+        <input type="checkbox" class="custom-control-input" id="activeSwitch">
+        <label class="custom-control-label" for="activeSwitch">
+            <p id="label"></p>
+        </label>
+    </div>
+
+    <div id="container">
+        <div class="d-grid gap-2 col-6 mx-auto" id="addBtnContainer">
+            <button id="addBtn" class="btn btn-primary" type="button">ADD URL</button>
+        </div>
+
+        <div id="urlList">
+
+        </div>
+
+        <div id="saveInput" style="display: none">
+            <div class="input-group mb-3" hidden>
+                <span class="input-group-text">Name: </span>
+                <input type="text" class="form-control" id="uuidInput" placeholder="uuid">
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text">Name: </span>
+                <input type="text" class="form-control" id="nameInput" placeholder="Ex: Google">
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text">URL: </span>
+                <input type="text" class="form-control" id="urlInput" placeholder="Ex: https://www.google.com" aria-describedby="basic-addon3">
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text">Time (seconds): </span>
+                <input type="number" class="form-control" id="timerInput"  placeholder="Ex: 20">
+            </div>
+            <div class="d-grid gap-2 col-6 mx-auto" style="display: inline">
+                <button id="cancelBtn" class="btn btn-light" style="margin: 0 15px;" type="button">CANCEL</button>
+                <button id="saveBtn" class="btn btn-primary" style="margin: 0 15px;" type="button">SAVE</button>
+                <button id="saveEditBtn" class="btn btn-primary" style="margin: 0 15px;" type="button">EDIT</button>
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+
+
+</body>
+
+<script src="popup.js"></script>
+<script src="bootstrap-4.3.1-dist/js/jquery-3.6.0.min.js"></script>
+<script src="bootstrap-4.3.1-dist/js/bootstrap.min.js"></script>
+</html>

@@ -1,0 +1,383 @@
+<html>
+<head>
+<title>popup.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #bbbbbb;}
+.s1 { color: #d55fde; font-style: italic;}
+.s2 { color: #89ca78;}
+.s3 { color: #d19a66;}
+.s4 { color: #2bbac5;}
+.s5 { color: #5c6370; font-style: italic;}
+</style>
+</head>
+<body bgcolor="#282c34">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+popup.js</font>
+</center></td></tr></table>
+<pre><span class="s0">oninit();</span>
+
+<span class="s1">function </span><span class="s0">oninit() {</span>
+
+    <span class="s0">chrome.storage.local.get(</span><span class="s2">'isActivated'</span><span class="s0">, data =&gt; {</span>
+        <span class="s0">document.getElementById(</span><span class="s2">&quot;activeSwitch&quot;</span><span class="s0">).checked = data.isActivated;</span>
+        <span class="s0">updateLabel(data.isActivated);</span>
+    <span class="s0">});</span>
+
+    <span class="s0">handleStoredUrlsState();</span>
+
+    <span class="s0">handleListeners();</span>
+<span class="s0">}</span>
+
+<span class="s1">function </span><span class="s0">updateLabel(activated) {</span>
+    <span class="s0">document.getElementById(</span><span class="s2">'container'</span><span class="s0">).hidden = activated;</span>
+    <span class="s1">if </span><span class="s0">(activated) {</span>
+        <span class="s0">document.getElementById(</span><span class="s2">'label'</span><span class="s0">).innerHTML = </span><span class="s2">'Disable'</span><span class="s0">;</span>
+    <span class="s0">} </span><span class="s1">else </span><span class="s0">{</span>
+        <span class="s0">document.getElementById(</span><span class="s2">'label'</span><span class="s0">).innerHTML = </span><span class="s2">'Enable'</span><span class="s0">;</span>
+    <span class="s0">}</span>
+<span class="s0">}</span>
+
+<span class="s1">function </span><span class="s0">handleStoredUrlsState() {</span>
+    <span class="s0">chrome.storage.local.get(</span><span class="s2">'urls'</span><span class="s0">, data =&gt; {</span>
+        <span class="s1">let </span><span class="s0">urlList = </span><span class="s2">''</span><span class="s0">;</span>
+        <span class="s1">const </span><span class="s0">urls = data.urls ? data.urls : []</span>
+        <span class="s0">urls.forEach(</span><span class="s1">function </span><span class="s0">(url) {</span>
+            <span class="s0">urlList += listHtml(url);</span>
+        <span class="s0">});</span>
+        <span class="s0">document.getElementById(</span><span class="s2">'urlList'</span><span class="s0">).innerHTML = urlList;</span>
+    <span class="s0">})</span>
+<span class="s0">}</span>
+
+<span class="s1">function </span><span class="s0">editBtnEventListener(url, urls) {</span>
+    <span class="s1">function </span><span class="s0">editBtnClick() {</span>
+        <span class="s0">document.getElementById(</span><span class="s2">&quot;saveInput&quot;</span><span class="s0">).style.display = </span><span class="s2">'inline'</span>
+
+        <span class="s0">document.getElementById(</span><span class="s2">'timerInput'</span><span class="s0">).value = url.time</span>
+        <span class="s0">document.getElementById(</span><span class="s2">'urlInput'</span><span class="s0">).value = url.url</span>
+        <span class="s0">document.getElementById(</span><span class="s2">'nameInput'</span><span class="s0">).value = url.name</span>
+        <span class="s0">document.getElementById(</span><span class="s2">'uuidInput'</span><span class="s0">).value = url.uuid</span>
+
+        <span class="s0">document.getElementById(</span><span class="s2">&quot;addBtnContainer&quot;</span><span class="s0">).hidden = </span><span class="s1">true</span>
+        <span class="s0">document.getElementById(</span><span class="s2">&quot;urlList&quot;</span><span class="s0">).hidden = </span><span class="s1">true</span>
+        <span class="s0">document.getElementById(</span><span class="s2">&quot;activeSwitchContainer&quot;</span><span class="s0">).hidden = </span><span class="s1">true</span>
+
+        <span class="s0">document.getElementById(</span><span class="s2">'saveBtn'</span><span class="s0">).hidden = </span><span class="s1">true</span><span class="s0">;</span>
+        <span class="s0">document.getElementById(</span><span class="s2">'saveEditBtn'</span><span class="s0">).hidden = </span><span class="s1">false</span><span class="s0">;</span>
+    <span class="s0">}</span>
+
+    <span class="s0">document.getElementById(url.uuid).getElementsByClassName(</span><span class="s2">'editBtn'</span><span class="s0">)[</span><span class="s3">0</span><span class="s0">]</span>
+        <span class="s0">.removeEventListener(</span><span class="s2">'click'</span><span class="s0">, editBtnClick)</span>
+    <span class="s0">document.getElementById(url.uuid).getElementsByClassName(</span><span class="s2">'editBtn'</span><span class="s0">)[</span><span class="s3">0</span><span class="s0">]</span>
+        <span class="s0">.addEventListener(</span><span class="s2">&quot;click&quot;</span><span class="s0">, editBtnClick);</span>
+<span class="s0">}</span>
+
+<span class="s1">function </span><span class="s0">saveEditBtnEventListener() {</span>
+    <span class="s1">function </span><span class="s0">saveEditBtnEvent() {</span>
+        <span class="s0">editBtn();</span>
+    <span class="s0">}</span>
+
+    <span class="s0">document.getElementById(</span><span class="s2">'saveEditBtn'</span><span class="s0">)</span>
+        <span class="s0">.removeEventListener(</span><span class="s2">'click'</span><span class="s0">, saveEditBtnEvent)</span>
+    <span class="s0">document.getElementById(</span><span class="s2">'saveEditBtn'</span><span class="s0">)</span>
+        <span class="s0">.addEventListener(</span><span class="s2">&quot;click&quot;</span><span class="s0">, saveEditBtnEvent);</span>
+<span class="s0">}</span>
+
+<span class="s1">function </span><span class="s0">handleListeners() {</span>
+
+    <span class="s0">switchEventListener()</span>
+    <span class="s0">addBtnEventListener()</span>
+    <span class="s0">cancelBtnEventListener();</span>
+    <span class="s0">saveBtnEventListener();</span>
+    <span class="s0">saveEditBtnEventListener();</span>
+
+    <span class="s0">chrome.storage.local.get(</span><span class="s2">'urls'</span><span class="s0">, data =&gt; {</span>
+        <span class="s1">const </span><span class="s0">urls = data.urls ? data.urls : []</span>
+        <span class="s1">for </span><span class="s0">(</span><span class="s1">const </span><span class="s0">url of urls) {</span>
+            <span class="s0">removeBtnEventListener(url, urls)</span>
+            <span class="s0">editBtnEventListener(url, urls)</span>
+            <span class="s0">moveDownEventListener(url, urls)</span>
+            <span class="s0">moveUpEventListener(url, urls)</span>
+        <span class="s0">}</span>
+    <span class="s0">})</span>
+<span class="s0">}</span>
+
+<span class="s1">function </span><span class="s0">cancel() {</span>
+    <span class="s0">document.getElementById(</span><span class="s2">&quot;saveInput&quot;</span><span class="s0">).style.display = </span><span class="s2">'none'</span>
+    <span class="s0">document.getElementById(</span><span class="s2">&quot;addBtnContainer&quot;</span><span class="s0">).hidden = </span><span class="s1">false</span>
+    <span class="s0">document.getElementById(</span><span class="s2">&quot;urlList&quot;</span><span class="s0">).hidden = </span><span class="s1">false</span>
+    <span class="s0">document.getElementById(</span><span class="s2">&quot;activeSwitchContainer&quot;</span><span class="s0">).hidden = </span><span class="s1">false</span>
+<span class="s0">}</span>
+
+<span class="s1">function </span><span class="s0">uuidv4() {</span>
+    <span class="s1">return </span><span class="s2">'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'</span><span class="s0">.replace(</span><span class="s4">/[xy]/g</span><span class="s0">, </span><span class="s1">function </span><span class="s0">(c) {</span>
+        <span class="s1">var </span><span class="s0">r = Math.random() * </span><span class="s3">16 </span><span class="s0">| </span><span class="s3">0</span><span class="s0">, v = c == </span><span class="s2">'x' </span><span class="s0">? r : (r &amp; </span><span class="s3">0x3 </span><span class="s0">| </span><span class="s3">0x8</span><span class="s0">);</span>
+        <span class="s1">return </span><span class="s0">v.toString(</span><span class="s3">16</span><span class="s0">);</span>
+    <span class="s0">});</span>
+<span class="s0">}</span>
+
+<span class="s1">var </span><span class="s0">swapElements = </span><span class="s1">function </span><span class="s0">(urlId, urls, urlIndex, newUrlIndex) {</span>
+    <span class="s1">if </span><span class="s0">(urlIndex &lt; newUrlIndex) {</span>
+        <span class="s0">$(</span><span class="s2">&quot;#&quot; </span><span class="s0">+ urlId + </span><span class="s2">&quot;&quot;</span><span class="s0">).insertAfter($(</span><span class="s2">&quot;#&quot; </span><span class="s0">+ urls[newUrlIndex].uuid + </span><span class="s2">&quot;&quot;</span><span class="s0">))</span>
+    <span class="s0">} </span><span class="s1">else </span><span class="s0">{</span>
+        <span class="s0">$(</span><span class="s2">&quot;#&quot; </span><span class="s0">+ urlId + </span><span class="s2">&quot;&quot;</span><span class="s0">).insertBefore($(</span><span class="s2">&quot;#&quot; </span><span class="s0">+ urls[newUrlIndex].uuid + </span><span class="s2">&quot;&quot;</span><span class="s0">))</span>
+    <span class="s0">}</span>
+<span class="s0">}</span>
+
+<span class="s1">function </span><span class="s0">array_move(arr, old_index, new_index) {</span>
+    <span class="s1">if </span><span class="s0">(new_index &gt;= arr.length) {</span>
+        <span class="s1">var </span><span class="s0">k = new_index - arr.length + </span><span class="s3">1</span><span class="s0">;</span>
+        <span class="s1">while </span><span class="s0">(k--) {</span>
+            <span class="s0">arr.push(undefined);</span>
+        <span class="s0">}</span>
+    <span class="s0">}</span>
+    <span class="s0">arr.splice(new_index, </span><span class="s3">0</span><span class="s0">, arr.splice(old_index, </span><span class="s3">1</span><span class="s0">)[</span><span class="s3">0</span><span class="s0">]);</span>
+    <span class="s1">return </span><span class="s0">arr; </span><span class="s5">// for testing</span>
+<span class="s0">}</span>
+
+<span class="s1">function </span><span class="s0">listHtml(url) {</span>
+    <span class="s1">return </span><span class="s2">&quot;&quot; </span><span class="s0">+</span>
+        <span class="s2">&quot;    &lt;ol id='&quot; </span><span class="s0">+ url.uuid + </span><span class="s2">&quot;' class=</span><span class="s4">\&quot;</span><span class="s2">list-group list-group-numbered ol</span><span class="s4">\&quot;</span><span class="s2">&gt;</span><span class="s4">\n</span><span class="s2">&quot; </span><span class="s0">+</span>
+        <span class="s2">&quot;        &lt;ul class=</span><span class="s4">\&quot;</span><span class="s2">list-group</span><span class="s4">\&quot;</span><span class="s2">&gt;</span><span class="s4">\n</span><span class="s2">&quot; </span><span class="s0">+</span>
+        <span class="s2">&quot;            &lt;li class=</span><span class="s4">\&quot;</span><span class="s2">list-group-item justify-content-between d-flex align-items-start</span><span class="s4">\&quot;</span><span class="s2">&gt;</span><span class="s4">\n</span><span class="s2">&quot; </span><span class="s0">+</span>
+        <span class="s2">&quot;                &lt;div style='width: 100px'&gt;</span><span class="s4">\n</span><span class="s2">&quot; </span><span class="s0">+</span>
+        <span class="s2">&quot;                    &lt;div class=</span><span class="s4">\&quot;</span><span class="s2">name nameAndSeconds ms-2 me-auto fw-bold</span><span class="s4">\&quot;</span><span class="s2">&gt;&lt;strong&gt;&quot; </span><span class="s0">+ url.name + </span><span class="s2">&quot;&lt;/strong&gt;&lt;/div&gt;</span><span class="s4">\n</span><span class="s2">&quot; </span><span class="s0">+</span>
+        <span class="s2">&quot;                    &lt;div class=</span><span class="s4">\&quot;</span><span class="s2">seconds nameAndSeconds ms-2 me-auto</span><span class="s4">\&quot;</span><span class="s2">&gt;&quot; </span><span class="s0">+ url.time + </span><span class="s2">&quot; Seconds&lt;/div&gt;</span><span class="s4">\n</span><span class="s2">&quot; </span><span class="s0">+</span>
+        <span class="s2">&quot;                    &lt;div class='urlInsideItem'&gt;&quot; </span><span class="s0">+ url.url + </span><span class="s2">&quot;&lt;/div&gt;</span><span class="s4">\n</span><span class="s2">&quot; </span><span class="s0">+</span>
+        <span class="s2">&quot;                &lt;/div&gt;</span><span class="s4">\n</span><span class="s2">&quot; </span><span class="s0">+</span>
+        <span class="s2">&quot;                &lt;div&gt;</span><span class="s4">\n</span><span class="s2">&quot; </span><span class="s0">+</span>
+        <span class="s2">&quot;                   &lt;button class=</span><span class="s4">\&quot;</span><span class="s2">editBtn btn btn-info</span><span class="s4">\&quot; </span><span class="s2">type=</span><span class="s4">\&quot;</span><span class="s2">button</span><span class="s4">\&quot;</span><span class="s2">&gt;Editar&lt;/button&gt;</span><span class="s4">\n</span><span class="s2">&quot; </span><span class="s0">+</span>
+        <span class="s2">&quot;                   &lt;button class=</span><span class="s4">\&quot;</span><span class="s2">removeBtn btn btn-danger</span><span class="s4">\&quot; </span><span class="s2">type=</span><span class="s4">\&quot;</span><span class="s2">button</span><span class="s4">\&quot;</span><span class="s2">&gt;Remove&lt;/button&gt;</span><span class="s4">\n</span><span class="s2">&quot; </span><span class="s0">+</span>
+        <span class="s2">&quot;                &lt;/div&gt;</span><span class="s4">\n</span><span class="s2">&quot; </span><span class="s0">+</span>
+        <span class="s2">&quot;            &lt;/li&gt;</span><span class="s4">\n</span><span class="s2">&quot; </span><span class="s0">+</span>
+        <span class="s2">&quot;            &lt;li class=</span><span class="s4">\&quot;</span><span class="s2">list-group-item d-flex justify-content-between align-items-start</span><span class="s4">\&quot;</span><span class="s2">&gt;</span><span class="s4">\n</span><span class="s2">&quot; </span><span class="s0">+</span>
+        <span class="s2">&quot;                &lt;button class=</span><span class="s4">\&quot;</span><span class="s2">moveUpBtn btn btn-outline-primary</span><span class="s4">\&quot; </span><span class="s2">style=</span><span class="s4">\&quot;</span><span class="s2">margin: 0 15px;</span><span class="s4">\&quot; </span><span class="s2">type=</span><span class="s4">\&quot;</span><span class="s2">button</span><span class="s4">\&quot;</span><span class="s2">&gt;&lt;i class=</span><span class="s4">\&quot;</span><span class="s2">bi bi-arrow-up-circle-fill</span><span class="s4">\&quot;</span><span class="s2">&gt;&lt;/i&gt;&lt;/button&gt;</span><span class="s4">\n</span><span class="s2">&quot; </span><span class="s0">+</span>
+        <span class="s2">&quot;                &lt;button class=</span><span class="s4">\&quot;</span><span class="s2">moveDownBtn btn btn-outline-primary</span><span class="s4">\&quot; </span><span class="s2">style=</span><span class="s4">\&quot;</span><span class="s2">margin: 0 15px;</span><span class="s4">\&quot; </span><span class="s2">type=</span><span class="s4">\&quot;</span><span class="s2">button</span><span class="s4">\&quot;</span><span class="s2">&gt;&lt;i class=</span><span class="s4">\&quot;</span><span class="s2">bi bi-arrow-down-circle-fill</span><span class="s4">\&quot;</span><span class="s2">&gt;&lt;/i&gt;&lt;/button&gt;</span><span class="s4">\n</span><span class="s2">&quot; </span><span class="s0">+</span>
+        <span class="s2">&quot;            &lt;/li&gt;</span><span class="s4">\n</span><span class="s2">&quot; </span><span class="s0">+</span>
+        <span class="s2">&quot;        &lt;/ul&gt;</span><span class="s4">\n</span><span class="s2">&quot; </span><span class="s0">+</span>
+        <span class="s2">&quot;    &lt;/ol&gt;&quot;</span>
+<span class="s0">}</span>
+
+
+<span class="s1">function </span><span class="s0">removeBtnEventListener(url, urls) {</span>
+
+    <span class="s1">function </span><span class="s0">removeEvent() {</span>
+
+        <span class="s1">function </span><span class="s0">askConfirm() {</span>
+            <span class="s1">if </span><span class="s0">(confirm(</span><span class="s2">&quot;Remove this url?&quot;</span><span class="s0">)) {</span>
+                <span class="s1">const </span><span class="s0">index = urls.findIndex(_url =&gt; _url.uuid === url.uuid)</span>
+                <span class="s0">urls.splice(index, </span><span class="s3">1</span><span class="s0">);</span>
+                <span class="s0">chrome.storage.local.set({</span>
+                    <span class="s0">urls: urls</span>
+                <span class="s0">})</span>
+                <span class="s0">document.getElementById(url.uuid).style.display = </span><span class="s2">'none'</span>
+            <span class="s0">}</span>
+        <span class="s0">}</span>
+
+        <span class="s0">askConfirm();</span>
+    <span class="s0">}</span>
+
+    <span class="s0">document.getElementById(url.uuid).getElementsByClassName(</span><span class="s2">'removeBtn'</span><span class="s0">)[</span><span class="s3">0</span><span class="s0">]</span>
+        <span class="s0">.removeEventListener(</span><span class="s2">'click'</span><span class="s0">, removeEvent)</span>
+    <span class="s0">document.getElementById(url.uuid).getElementsByClassName(</span><span class="s2">'removeBtn'</span><span class="s0">)[</span><span class="s3">0</span><span class="s0">]</span>
+        <span class="s0">.addEventListener(</span><span class="s2">&quot;click&quot;</span><span class="s0">, removeEvent);</span>
+<span class="s0">}</span>
+
+
+<span class="s1">function </span><span class="s0">moveUpEventListener(url, urls) {</span>
+
+    <span class="s1">function </span><span class="s0">moveUpEvent() {</span>
+        <span class="s1">const </span><span class="s0">index = urls.findIndex(_url =&gt; _url.uuid === url.uuid)</span>
+
+        <span class="s1">if </span><span class="s0">(index === </span><span class="s3">0</span><span class="s0">) {</span>
+            <span class="s1">return</span>
+        <span class="s0">}</span>
+        <span class="s0">swapElements(url.uuid, urls, index, index - </span><span class="s3">1</span><span class="s0">)</span>
+        <span class="s0">array_move(urls, index, index - </span><span class="s3">1</span><span class="s0">)</span>
+
+        <span class="s0">chrome.storage.local.set({</span>
+            <span class="s0">urls: urls</span>
+        <span class="s0">})</span>
+    <span class="s0">}</span>
+
+    <span class="s0">document.getElementById(url.uuid).getElementsByClassName(</span><span class="s2">'moveUpBtn'</span><span class="s0">)[</span><span class="s3">0</span><span class="s0">]</span>
+        <span class="s0">.removeEventListener(</span><span class="s2">'click'</span><span class="s0">, moveUpEvent)</span>
+
+    <span class="s0">document.getElementById(url.uuid).getElementsByClassName(</span><span class="s2">'moveUpBtn'</span><span class="s0">)[</span><span class="s3">0</span><span class="s0">]</span>
+        <span class="s0">.addEventListener(</span><span class="s2">&quot;click&quot;</span><span class="s0">, moveUpEvent);</span>
+<span class="s0">}</span>
+
+<span class="s1">function </span><span class="s0">moveDownEventListener(url, urls) {</span>
+
+    <span class="s1">function </span><span class="s0">addEvent() {</span>
+        <span class="s1">const </span><span class="s0">index = urls.findIndex(_url =&gt; _url.uuid === url.uuid)</span>
+        <span class="s1">if </span><span class="s0">(index === urls.length - </span><span class="s3">1</span><span class="s0">) {</span>
+            <span class="s1">return</span>
+        <span class="s0">}</span>
+        <span class="s0">swapElements(url.uuid, urls, index, index + </span><span class="s3">1</span><span class="s0">)</span>
+        <span class="s0">array_move(urls, index, index + </span><span class="s3">1</span><span class="s0">)</span>
+
+        <span class="s0">chrome.storage.local.set({</span>
+            <span class="s0">urls: urls</span>
+        <span class="s0">})</span>
+    <span class="s0">}</span>
+
+    <span class="s0">document.getElementById(url.uuid).getElementsByClassName(</span><span class="s2">'moveDownBtn'</span><span class="s0">)[</span><span class="s3">0</span><span class="s0">]</span>
+        <span class="s0">.removeEventListener(</span><span class="s2">'click'</span><span class="s0">, addEvent)</span>
+    <span class="s0">document.getElementById(url.uuid).getElementsByClassName(</span><span class="s2">'moveDownBtn'</span><span class="s0">)[</span><span class="s3">0</span><span class="s0">]</span>
+        <span class="s0">.addEventListener(</span><span class="s2">&quot;click&quot;</span><span class="s0">, addEvent);</span>
+<span class="s0">}</span>
+
+<span class="s1">function </span><span class="s0">enableCurrentTab() {</span>
+    <span class="s0">chrome.tabs.query({active: </span><span class="s1">true</span><span class="s0">, currentWindow: </span><span class="s1">true</span><span class="s0">}, </span><span class="s1">function </span><span class="s0">(tabs) {</span>
+        <span class="s0">chrome.storage.local.get(</span><span class="s2">'urls'</span><span class="s0">, urlsData =&gt; {</span>
+            <span class="s1">const </span><span class="s0">currentTab = tabs[</span><span class="s3">0</span><span class="s0">]</span>
+            <span class="s0">chrome.storage.local.set({</span>
+                <span class="s0">enabledTab: currentTab,</span>
+                <span class="s0">currentUrl: urlsData.urls[</span><span class="s3">0</span><span class="s0">],</span>
+                <span class="s0">isActivated: </span><span class="s1">true</span>
+            <span class="s0">})</span>
+            <span class="s0">chrome.runtime.sendMessage({</span>
+                <span class="s0">message: </span><span class="s2">&quot;enable&quot;</span><span class="s0">,</span>
+            <span class="s0">}, response =&gt; {</span>
+                <span class="s1">if </span><span class="s0">(response &amp;&amp; response.message === </span><span class="s2">'success'</span><span class="s0">) {</span>
+                    <span class="s0">console.log(</span><span class="s2">'background proccess started'</span><span class="s0">)</span>
+                <span class="s0">}</span>
+            <span class="s0">});</span>
+        <span class="s0">})</span>
+    <span class="s0">})</span>
+<span class="s0">}</span>
+
+<span class="s1">function </span><span class="s0">disableRunningTab() {</span>
+    <span class="s0">chrome.storage.local.set({</span>
+        <span class="s0">enabledTab: </span><span class="s1">null</span><span class="s0">,</span>
+        <span class="s0">isActivated: </span><span class="s1">false</span>
+    <span class="s0">})</span>
+<span class="s0">}</span>
+
+<span class="s1">function </span><span class="s0">switchEventListener() {</span>
+    <span class="s1">function </span><span class="s0">switchEvent(ev) {</span>
+        <span class="s0">updateLabel(ev.target.checked);</span>
+        <span class="s1">if </span><span class="s0">(ev.target.checked) {</span>
+            <span class="s0">enableCurrentTab()</span>
+        <span class="s0">} </span><span class="s1">else </span><span class="s0">{</span>
+            <span class="s0">disableRunningTab();</span>
+        <span class="s0">}</span>
+    <span class="s0">}</span>
+
+    <span class="s0">document.getElementById(</span><span class="s2">'activeSwitch'</span><span class="s0">)</span>
+        <span class="s0">.removeEventListener(</span><span class="s2">'click'</span><span class="s0">, switchEvent)</span>
+    <span class="s0">document.getElementById(</span><span class="s2">'activeSwitch'</span><span class="s0">)</span>
+        <span class="s0">.addEventListener(</span><span class="s2">&quot;click&quot;</span><span class="s0">, switchEvent);</span>
+<span class="s0">}</span>
+
+<span class="s1">function </span><span class="s0">addBtnEventListener() {</span>
+    <span class="s1">function </span><span class="s0">addBtnClick() {</span>
+        <span class="s0">document.getElementById(</span><span class="s2">&quot;saveInput&quot;</span><span class="s0">).style.display = </span><span class="s2">'inline'</span>
+        <span class="s0">document.getElementById(</span><span class="s2">&quot;addBtnContainer&quot;</span><span class="s0">).hidden = </span><span class="s1">true</span>
+        <span class="s0">document.getElementById(</span><span class="s2">&quot;urlList&quot;</span><span class="s0">).hidden = </span><span class="s1">true</span>
+        <span class="s0">document.getElementById(</span><span class="s2">&quot;activeSwitchContainer&quot;</span><span class="s0">).hidden = </span><span class="s1">true</span>
+
+        <span class="s0">document.getElementById(</span><span class="s2">'saveBtn'</span><span class="s0">).hidden = </span><span class="s1">false</span><span class="s0">;</span>
+        <span class="s0">document.getElementById(</span><span class="s2">'saveEditBtn'</span><span class="s0">).hidden = </span><span class="s1">true</span><span class="s0">;</span>
+    <span class="s0">}</span>
+
+    <span class="s0">document.getElementById(</span><span class="s2">'addBtn'</span><span class="s0">)</span>
+        <span class="s0">.removeEventListener(</span><span class="s2">'click'</span><span class="s0">, addBtnClick)</span>
+    <span class="s0">document.getElementById(</span><span class="s2">'addBtn'</span><span class="s0">)</span>
+        <span class="s0">.addEventListener(</span><span class="s2">&quot;click&quot;</span><span class="s0">, addBtnClick);</span>
+<span class="s0">}</span>
+
+<span class="s1">function </span><span class="s0">cancelBtnEventListener() {</span>
+
+    <span class="s1">function </span><span class="s0">cancelBtnEventListener() {</span>
+        <span class="s0">cancel();</span>
+    <span class="s0">}</span>
+
+    <span class="s0">document.getElementById(</span><span class="s2">'cancelBtn'</span><span class="s0">)</span>
+        <span class="s0">.removeEventListener(</span><span class="s2">'click'</span><span class="s0">, cancelBtnEventListener)</span>
+    <span class="s0">document.getElementById(</span><span class="s2">'cancelBtn'</span><span class="s0">)</span>
+        <span class="s0">.addEventListener(</span><span class="s2">&quot;click&quot;</span><span class="s0">, cancelBtnEventListener);</span>
+<span class="s0">}</span>
+
+<span class="s1">function </span><span class="s0">saveBtnEventListener() {</span>
+    <span class="s1">function </span><span class="s0">saveBtnEvent() {</span>
+        <span class="s0">saveBtn();</span>
+    <span class="s0">}</span>
+
+    <span class="s0">document.getElementById(</span><span class="s2">'saveBtn'</span><span class="s0">)</span>
+        <span class="s0">.removeEventListener(</span><span class="s2">'click'</span><span class="s0">, saveBtnEvent)</span>
+    <span class="s0">document.getElementById(</span><span class="s2">'saveBtn'</span><span class="s0">)</span>
+        <span class="s0">.addEventListener(</span><span class="s2">&quot;click&quot;</span><span class="s0">, saveBtnEvent);</span>
+<span class="s0">}</span>
+
+<span class="s1">function </span><span class="s0">clearInputs() {</span>
+    <span class="s0">document.getElementById(</span><span class="s2">'timerInput'</span><span class="s0">).value = </span><span class="s3">0</span><span class="s0">;</span>
+    <span class="s0">document.getElementById(</span><span class="s2">'urlInput'</span><span class="s0">).value = </span><span class="s2">''</span><span class="s0">;</span>
+    <span class="s0">document.getElementById(</span><span class="s2">'nameInput'</span><span class="s0">).value = </span><span class="s2">''</span><span class="s0">;</span>
+    <span class="s0">document.getElementById(</span><span class="s2">'uuidInput'</span><span class="s0">).value = </span><span class="s2">''</span>
+<span class="s0">}</span>
+
+<span class="s1">function </span><span class="s0">saveBtn() {</span>
+    <span class="s0">chrome.storage.local.get(</span><span class="s2">'urls'</span><span class="s0">, data =&gt; {</span>
+        <span class="s1">const </span><span class="s0">urls = data.urls ? data.urls : []</span>
+        <span class="s1">const </span><span class="s0">newItem = {</span>
+            <span class="s0">time: document.getElementById(</span><span class="s2">'timerInput'</span><span class="s0">).value,</span>
+            <span class="s0">url: document.getElementById(</span><span class="s2">'urlInput'</span><span class="s0">).value,</span>
+            <span class="s0">name: document.getElementById(</span><span class="s2">'nameInput'</span><span class="s0">).value,</span>
+            <span class="s0">uuid: uuidv4()</span>
+        <span class="s0">}</span>
+        <span class="s0">urls.push(newItem);</span>
+        <span class="s0">chrome.storage.local.set({</span>
+            <span class="s0">urls: urls</span>
+        <span class="s0">})</span>
+        <span class="s0">clearInputs()</span>
+        <span class="s0">cancel();</span>
+
+        <span class="s1">const </span><span class="s0">urlList = document.getElementById(</span><span class="s2">'urlList'</span><span class="s0">);</span>
+        <span class="s1">const </span><span class="s0">newcontent = document.createElement(</span><span class="s2">'div'</span><span class="s0">);</span>
+        <span class="s0">newcontent.innerHTML = listHtml(newItem)</span>
+        <span class="s0">urlList.append(newcontent);</span>
+        <span class="s0">removeBtnEventListener(newItem, urls)</span>
+        <span class="s0">moveUpEventListener(newItem, urls)</span>
+        <span class="s0">moveDownEventListener(newItem, urls)</span>
+        <span class="s0">editBtnEventListener(newItem, urls)</span>
+    <span class="s0">})</span>
+<span class="s0">}</span>
+
+<span class="s1">function </span><span class="s0">editBtn() {</span>
+
+    <span class="s0">chrome.storage.local.get(</span><span class="s2">'urls'</span><span class="s0">, data =&gt; {</span>
+        <span class="s1">const </span><span class="s0">urls = data.urls ? data.urls : []</span>
+
+        <span class="s1">const </span><span class="s0">uuidToEdit = document.getElementById(</span><span class="s2">'uuidInput'</span><span class="s0">).value</span>
+
+        <span class="s1">const </span><span class="s0">index = urls.findIndex(_url =&gt; _url.uuid === uuidToEdit)</span>
+
+        <span class="s0">urls[index] = {</span>
+            <span class="s0">time: document.getElementById(</span><span class="s2">'timerInput'</span><span class="s0">).value,</span>
+            <span class="s0">url: document.getElementById(</span><span class="s2">'urlInput'</span><span class="s0">).value,</span>
+            <span class="s0">name: document.getElementById(</span><span class="s2">'nameInput'</span><span class="s0">).value,</span>
+            <span class="s0">uuid: document.getElementById(</span><span class="s2">'uuidInput'</span><span class="s0">).value,</span>
+        <span class="s0">}</span>
+
+        <span class="s0">chrome.storage.local.set({</span>
+            <span class="s0">urls: urls</span>
+        <span class="s0">})</span>
+
+        <span class="s0">cancel();</span>
+        <span class="s0">clearInputs()</span>
+        <span class="s0">document.getElementById(uuidToEdit).getElementsByClassName(</span><span class="s2">'urlInsideItem'</span><span class="s0">)[</span><span class="s3">0</span><span class="s0">].innerHTML = urls[index].url;</span>
+        <span class="s0">document.getElementById(uuidToEdit).getElementsByClassName(</span><span class="s2">'name'</span><span class="s0">)[</span><span class="s3">0</span><span class="s0">].innerHTML = </span><span class="s2">`&lt;strong&gt;</span><span class="s0">${urls[index].name}</span><span class="s2">&lt;/strong&gt;`</span>
+        <span class="s0">document.getElementById(uuidToEdit).getElementsByClassName(</span><span class="s2">'seconds'</span><span class="s0">)[</span><span class="s3">0</span><span class="s0">].innerHTML = </span><span class="s2">`</span><span class="s0">${urls[index].time} </span><span class="s2">Seconds`</span>
+
+        <span class="s0">console.log(document.getElementById(uuidToEdit).getElementsByClassName(</span><span class="s2">'urlInsideItem'</span><span class="s0">).innerHtml)</span>
+        <span class="s0">console.log(document.getElementById(uuidToEdit).getElementsByClassName(</span><span class="s2">'name'</span><span class="s0">).innerHtml)</span>
+        <span class="s0">console.log(document.getElementById(uuidToEdit).getElementsByClassName(</span><span class="s2">'seconds'</span><span class="s0">).innerHtml)</span>
+    <span class="s0">})</span>
+<span class="s0">}</span>
+</pre>
+</body>
+</html>

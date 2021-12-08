@@ -1,0 +1,24 @@
+body {
+    width: 500px;
+    padding: 25px;
+}
+
+#addBtnContainer {
+    padding: 12px;
+}
+
+.ol {
+  padding-bottom: 12px;
+}
+
+.urlInsideItem {
+    display: block;
+    width: 350px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.nameAndSeconds {
+    width: 300px;
+}
